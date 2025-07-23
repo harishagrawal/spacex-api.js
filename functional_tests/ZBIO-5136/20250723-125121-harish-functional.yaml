@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: कार्ड शेष और भुगतान प्रक्रिया API
+  description: कार्ड शेष और भुगतान प्रक्रिया की कार्यक्षमता का परीक्षण
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /card-balance:
+    get:
+      summary: वर्तमान अवैतनिक कार्ड शेष की पुष्टि करें
+      description: यह एपीआई वर्तमान अवैतनिक कार्ड शेष की पुष्टि करता है।
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें सही अवैतनिक शेष होता है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unpaidBalance:
+                    type: number
+                    description: अवैतनिक शेष
+                    example: 0
+  /card-details:
+    get:
+      summary: भुगतान की नियत तिथि की पुष्टि करें
+      description: यह एपीआई भुगतान की नियत तिथि की पुष्टि करता है।
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें सही भुगतान की नियत तिथि होती है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dueDate:
+                    type: string
+                    format: date
+                    description: भुगतान की नियत तिथि
+  /payment-due-trigger:
+    get:
+      summary: भुगतान की तारीख के बाद कॉल ट्रिगर की पुष्टि करें
+      description: यह एपीआई भुगतान की तारीख के बाद कॉल ट्रिगर की पुष्टि करता है।
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें कॉल ट्रिगर की पुष्टि होती है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  callTriggered:
+                    type: boolean
+                    description: कॉल ट्रिगर की स्थिति
+                    example: false
+  /process-payment:
+    post:
+      summary: कार्ड भुगतान संग्रह प्रक्रिया का परीक्षण करें
+      description: यह एपीआई कार्ड भुगतान संग्रह प्रक्रिया का परीक्षण करता है।
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardDetails:
+                  type: object
+                  description: कार्ड विवरण
+                  properties:
+                    cardNumber:
+                      type: string
+                      description: कार्ड नंबर
+                    expiryDate:
+                      type: string
+                      format: date
+                      description: समाप्ति तिथि
+                    cvv:
+                      type: string
+                      description: सीवीवी
+                paymentAmount:
+                  type: number
+                  description: भुगतान राशि
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें भुगतान सफल होता है और शेष राशि अपडेट होती है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentStatus:
+                    type: string
+                    description: भुगतान की स्थिति
+                    example: "सफल"
+                  updatedBalance:
+                    type: number
+                    description: अपडेटेड अवैतनिक शेष
+        '400':
+          description: अमान्य कार्ड विवरण के लिए प्रतिक्रिया
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: त्रुटि संदेश
+                    example: "अमान्य कार्ड विवरण"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
