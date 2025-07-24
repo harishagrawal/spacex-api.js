@@ -1,0 +1,64 @@
+{
+  "scenarios": [
+    {
+      "type": "functional",
+      "title": "Fetch Credit Card Due Date and Balance",
+      "description": "Verify the system fetches the correct due date and balance for a given credit card.",
+      "testId": "TC-001",
+      "testDescription": "Ensure that the system retrieves the due date and balance details when provided with a valid credit card ID.",
+      "prerequisites": "A valid credit card ID must exist in the system.",
+      "stepsToPerform": "1. Enter the credit card ID.\n2. Request the due date and balance information.",
+      "expectedResult": "The system displays the correct due date and balance for the given credit card."
+    },
+    {
+      "type": "functional",
+      "title": "Arrange Call for Unpaid and Overdue Balance",
+      "description": "Check if a call is arranged for the user when the balance is unpaid and overdue.",
+      "testId": "TC-002",
+      "testDescription": "Verify that the system arranges a call to the user when their credit card balance is overdue and unpaid.",
+      "prerequisites": "User's credit card balance must be overdue and unpaid.",
+      "stepsToPerform": "1. Check the credit card balance status.\n2. Verify if the balance is overdue and unpaid.\n3. Arrange a call to the user.",
+      "expectedResult": "A call is successfully arranged for the user to notify them about their overdue balance."
+    },
+    {
+      "type": "functional",
+      "title": "Update Card Balance Post Payment",
+      "description": "Ensure the card balance is updated after payment collection.",
+      "testId": "TC-003",
+      "testDescription": "Verify that the system updates the card balance once a payment is collected.",
+      "prerequisites": "A payment must be processed against the credit card.",
+      "stepsToPerform": "1. Process a payment for the credit card.\n2. Verify the card balance is updated accordingly.",
+      "expectedResult": "The card balance is reduced by the payment amount and updated correctly."
+    },
+    {
+      "type": "non-functional",
+      "title": "Response Time for Fetching Due Date and Balance",
+      "description": "Validate the response time when fetching credit card due date and balance.",
+      "testId": "TC-004",
+      "testDescription": "Ensure the system responds within an acceptable time frame when retrieving due date and balance information.",
+      "prerequisites": "The system should be under normal load conditions.",
+      "stepsToPerform": "1. Request due date and balance information for a credit card.\n2. Measure the response time.",
+      "expectedResult": "The system returns the due date and balance information within an acceptable response time."
+    },
+    {
+      "type": "non-functional",
+      "title": "System Behavior Under Load During Payments",
+      "description": "Check the system's performance under high load when processing multiple payments.",
+      "testId": "TC-005",
+      "testDescription": "Assess the system's stability and accuracy while handling multiple payment transactions simultaneously.",
+      "prerequisites": "Simulate a high load environment with multiple payment transactions.",
+      "stepsToPerform": "1. Initiate multiple payment transactions concurrently.\n2. Monitor the system's performance and accuracy.",
+      "expectedResult": "All payments are processed successfully, and card balances are updated accurately without any errors."
+    },
+    {
+      "type": "non-functional",
+      "title": "System Continuity During Payment Gateway Downtime",
+      "description": "Verify how the system handles payment gateway downtime or abnormal behavior.",
+      "testId": "TC-006",
+      "testDescription": "Ensure the system provides appropriate feedback and maintains data integrity during payment gateway issues.",
+      "prerequisites": "Simulate a payment gateway downtime scenario.",
+      "stepsToPerform": "1. Attempt a payment transaction during gateway downtime.\n2. Observe the system's response and error handling.",
+      "expectedResult": "The system displays an error message about the gateway issue and ensures no data loss, recovering within a reasonable time."
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+openapi: 3.0.0
+info:
+  title: क्रेडिट कार्ड अकाउंट एपीआई
+  description: क्रेडिट कार्ड अकाउंट के लिए एपीआई परीक्षण
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /credit-card/balance:
+    get:
+      summary: अप्रयुक्त कार्ड बैलेंस की जांच करें
+      description: उपयोगकर्ता के क्रेडिट कार्ड के अप्रयुक्त बैलेंस की जांच करता है
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें सही अप्रयुक्त बैलेंस दिखता है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unusedBalance:
+                    type: number
+                    example: 5000.00
+
+  /credit-card/due-date:
+    get:
+      summary: भुगतान की नियत तिथि की जांच करें
+      description: कार्ड के बिलिंग चक्र के अनुसार भुगतान की नियत तिथि की जांच करता है
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें सही भुगतान नियत तिथि दिखती है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dueDate:
+                    type: string
+                    format: date
+                    example: '2023-11-15'
+
+  /credit-card/trigger-call:
+    post:
+      summary: नियत तिथि के बाद सिस्टम द्वारा कॉल ट्रिगर की जांच करें
+      description: अपरिवर्तित बैलेंस के लिए स्वचालित कॉल भुगतान संग्रह के लिए ट्रिगर करता है
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें कॉल ट्रिगर की पुष्टि होती है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  callTriggered:
+                    type: boolean
+                    example: true
+
+  /credit-card/make-payment:
+    post:
+      summary: कार्ड भुगतान प्रक्रिया की जांच करें
+      description: उपयोगकर्ता के क्रेडिट कार्ड का भुगतान प्रक्रिया करता है
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardDetails:
+                  type: object
+                  properties:
+                    cardNumber:
+                      type: string
+                      example: '1234-5678-9876-5432'
+                    expiryDate:
+                      type: string
+                      example: '12/25'
+                    cvv:
+                      type: string
+                      example: '123'
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें भुगतान सफल होता है और बैलेंस अपडेट होता है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentStatus:
+                    type: string
+                    example: 'Success'
+                  updatedBalance:
+                    type: number
+                    example: 4500.00
+
+  /credit-card/update-balance:
+    post:
+      summary: कार्ड भुगतान के बाद अपरिवर्तित बैलेंस अपडेट की जांच करें
+      description: भुगतान के बाद अपरिवर्तित बैलेंस को अपडेट करता है
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentAmount:
+                  type: number
+                  example: 500.00
+      responses:
+        '200':
+          description: सफल प्रतिक्रिया जिसमें अपरिवर्तित बैलेंस अपडेट होता है
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updatedBalance:
+                    type: number
+                    example: 4000.00
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
