@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  title: Credit Card API
+  description: API for managing credit card balances and payments
+  version: 1.0.0
+servers:
+  - url: http://api.example.com
+paths:
+  /credit-card/balance-due-date:
+    get:
+      summary: Get Credit Card Due Date and Balance
+      description: Retrieve the due date and balance information for a given credit card number.
+      parameters:
+        - name: creditCardNumber
+          in: query
+          required: true
+          schema:
+            type: string
+            example: '1234-5678-9012-3456'
+      responses:
+        '200':
+          description: Successful response with due date and balance information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dueDate:
+                    type: string
+                    format: date
+                    example: '2023-10-15'
+                  balance:
+                    type: number
+                    example: 1500.00
+
+  /credit-card/check-overdue:
+    get:
+      summary: Check Overdue Balance and Arrange Call
+      description: Check if a credit card has an overdue balance and arrange a call for the user.
+      parameters:
+        - name: creditCardNumber
+          in: query
+          required: true
+          schema:
+            type: string
+            example: '1234-5678-9012-3456'
+      responses:
+        '200':
+          description: Successful response indicating call arrangement
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  callArranged:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'A call has been arranged for overdue balance.'
+
+  /credit-card/update-balance:
+    post:
+      summary: Update Card Balance on Payment
+      description: Update the balance of a credit card upon receiving a payment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                creditCardNumber:
+                  type: string
+                  example: '1234-5678-9012-3456'
+                amount:
+                  type: number
+                  example: 500
+      responses:
+        '200':
+          description: Successful response confirming balance update
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balanceUpdated:
+                    type: boolean
+                    example: true
+                  newBalance:
+                    type: number
+                    example: 1000.00
+
+  /credit-card/process-payments:
+    post:
+      summary: Process Multiple Payments
+      description: Process multiple payments for different credit cards and update their balances.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  creditCardNumber:
+                    type: string
+                    example: '1234-5678-9012-3456'
+                  amount:
+                    type: number
+                    example: 500
+      responses:
+        '200':
+          description: Successful response confirming all payments processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentsProcessed:
+                    type: boolean
+                    example: true
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        creditCardNumber:
+                          type: string
+                          example: '1234-5678-9012-3456'
+                        newBalance:
+                          type: number
+                          example: 1000.00
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
