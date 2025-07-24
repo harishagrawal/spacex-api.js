@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  title: Credit Card API
+  description: API for managing credit card operations including fetching due balance, arranging calls, updating balance, and handling payments under various conditions.
+  version: 1.0.0
+servers:
+  - url: http://api.example.com
+    description: Production server
+
+paths:
+  /credit-cards/{cardId}/due-balance:
+    get:
+      summary: Fetch Credit Card Due Date and Balance
+      description: Retrieve the due date and balance for a specific credit card.
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          description: The ID of the credit card
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with due date and balance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dueDate:
+                    type: string
+                    format: date
+                    example: "2023-10-15"
+                  balance:
+                    type: number
+                    format: float
+                    example: 250.75
+      security:
+        - bearerAuth: []
+
+  /credit-cards/{cardId}/arrange-call:
+    post:
+      summary: Arrange Call for Unpaid and Overdue Balance
+      description: Arrange a call for a credit card with overdue and unpaid balance.
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          description: The ID of the credit card
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Confirmation that a call has been arranged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Call arranged successfully for credit card ID 67890."
+      security:
+        - bearerAuth: []
+
+  /credit-cards/{cardId}/update-balance:
+    put:
+      summary: Update Card Balance Post Payment
+      description: Update the balance of a credit card after a payment is processed.
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          description: The ID of the credit card
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentAmount:
+                  type: number
+                  format: float
+                  example: 100
+      responses:
+        '200':
+          description: Successful update of the card balance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newBalance:
+                    type: number
+                    format: float
+                    example: 150.75
+      security:
+        - bearerAuth: []
+
+  /credit-cards/{cardId}/payment:
+    post:
+      summary: System Continuity During Payment Gateway Downtime
+      description: Handle payment transactions during payment gateway downtime.
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          description: The ID of the credit card
+          schema:
+            type: string
+      responses:
+        '503':
+          description: Service unavailable due to payment gateway downtime
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Payment gateway is currently unavailable. Please try again later."
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
