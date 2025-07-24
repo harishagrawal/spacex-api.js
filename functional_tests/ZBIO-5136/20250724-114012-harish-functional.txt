@@ -1,0 +1,54 @@
+{
+  "scenarios": [
+    {
+      "type": "functional",
+      "title": "Validate the current unpaid card balance",
+      "description": "Ensure the system displays the correct unpaid balance for the card.",
+      "testId": "TC-001",
+      "testDescription": "Verify that the system accurately reflects the unpaid balance of the card, taking into account any recent transactions or payments.",
+      "prerequisites": "User must have a credit card account with the system.",
+      "stepsToPerform": "1. Log into the user account.\n2. Navigate to the credit card section.\n3. Check the displayed unpaid balance.",
+      "expectedResult": "The unpaid balance displayed should be accurate and reflect any recent payments or charges."
+    },
+    {
+      "type": "functional",
+      "title": "Verify the payment due date",
+      "description": "Ensure the system shows the correct payment due date for the card.",
+      "testId": "TC-002",
+      "testDescription": "The system should display the correct payment due date based on the billing cycle of the card.",
+      "prerequisites": "User must have a credit card account with the system.",
+      "stepsToPerform": "1. Log into the user account.\n2. Navigate to the credit card section.\n3. Check the displayed payment due date.",
+      "expectedResult": "The payment due date should be correct and reflect the card's billing cycle."
+    },
+    {
+      "type": "functional",
+      "title": "Verify if the system triggers a call once the payment date is past due",
+      "description": "Ensure the system initiates a call for payment collection when the due date is missed.",
+      "testId": "TC-003",
+      "testDescription": "The system should automatically trigger a call to the customer if the payment due date has passed without a payment.",
+      "prerequisites": "User must have a credit card account with an unpaid balance past the due date.",
+      "stepsToPerform": "1. Simulate a scenario where the payment due date has passed.\n2. Monitor the system for an automated call.",
+      "expectedResult": "An automated call should be triggered for payment collection."
+    },
+    {
+      "type": "functional",
+      "title": "Test the card payment collection process via card payment",
+      "description": "Ensure the system successfully processes card payments and updates the balance.",
+      "testId": "TC-004",
+      "testDescription": "The system should accept valid card details for payment and update the unpaid balance accordingly.",
+      "prerequisites": "User must have a credit card account with an unpaid balance.",
+      "stepsToPerform": "1. Log into the user account.\n2. Navigate to the payment section.\n3. Enter valid card details for payment.\n4. Confirm the payment.",
+      "expectedResult": "Payment should be successful and the unpaid balance should be updated."
+    },
+    {
+      "type": "functional",
+      "title": "Validate after card payment, the unpaid balance gets updated",
+      "description": "Ensure the unpaid balance is reduced by the payment amount.",
+      "testId": "TC-005",
+      "testDescription": "After a payment is made, the system should update the unpaid balance to reflect the payment.",
+      "prerequisites": "User must have a credit card account with an unpaid balance.",
+      "stepsToPerform": "1. Log into the user account.\n2. Make a payment towards the unpaid balance.\n3. Check the updated unpaid balance.",
+      "expectedResult": "The unpaid balance should be reduced by the amount paid."
+    }
+  ]
+}
