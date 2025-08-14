@@ -1,0 +1,201 @@
+openapi: 3.0.0
+info:
+  title: מערכת כרטיסי אשראי API
+  description: API לבדיקת מערכת כרטיסי אשראי
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /card-balance/unpaid:
+    get:
+      summary: אימות יתרת כרטיס שלא שולמה
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unpaidBalance:
+                    type: number
+                    description: היתרה שלא שולמה
+      description: |
+        מאמת את היתרה שלא שולמה עבור כרטיס אשראי פעיל. אם הכרטיס חדש, היתרה צריכה להיות 0.
+
+  /card-details/payment-due-date:
+    get:
+      summary: אימות תאריך מועד התשלום
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentDueDate:
+                    type: string
+                    format: date
+                    description: תאריך מועד התשלום
+      description: |
+        מאמת את תאריך מועד התשלום עבור כרטיס אשראי פעיל. אם הכרטיס חדש, תאריך מועד התשלום צריך להיות מחזור החיוב הראשון מהתאריך בו הונפק הכרטיס.
+
+  /card-payment/auto-call:
+    get:
+      summary: אימות הפעלת שיחה כאשר מועד התשלום עבר
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  autoCallInitiated:
+                    type: boolean
+                    description: האם השיחה האוטומטית הופעלה
+      description: |
+        מאמת אם השיחה האוטומטית הופעלה כאשר מועד התשלום עבר. אם הכרטיס חדש ואין מועד תשלום, לא צריכה להיות שיחה.
+
+  /card-payment/collect:
+    post:
+      summary: בדיקת תהליך איסוף תשלום דרך כרטיס
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardDetails:
+                  type: object
+                  properties:
+                    cardNumber:
+                      type: string
+                    expiryDate:
+                      type: string
+                      format: date
+                    cvv:
+                      type: string
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paymentStatus:
+                    type: string
+                    description: מצב התשלום
+                  updatedBalance:
+                    type: number
+                    description: יתרה לאחר תשלום
+      description: |
+        מאמת את תהליך איסוף התשלום דרך כרטיס אשראי עם פרטי כרטיס תקינים. אם הפרטים אינם תקינים, התשלום לא אמור להצליח.
+
+  /card-payment/make-payment:
+    post:
+      summary: אימות עדכון יתרה לאחר תשלום
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentAmount:
+                  type: number
+                  description: סכום התשלום
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updatedUnpaidBalance:
+                    type: number
+                    description: יתרה שלא שולמה לאחר תשלום
+                  excessAmount:
+                    type: number
+                    description: סכום עודף שנזקף לחשבון
+      description: |
+        מאמת את עדכון היתרה שלא שולמה לאחר ביצוע תשלום. אם סכום התשלום גבוה מהיתרה, הסכום העודף ייזקף לחשבון.
+
+  /card-balance:
+    get:
+      summary: בדיקת זמן תגובה של המערכת בעת שליפת יתרת כרטיס
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    description: יתרת כרטיס
+                  responseTime:
+                    type: string
+                    description: זמן תגובה של המערכת
+      description: |
+        מאמת את זמן התגובה של המערכת בעת שליפת יתרת כרטיס אשראי פעיל.
+
+  /card-payment/secure-payment:
+    post:
+      summary: בדיקת אבטחת תהליך איסוף התשלום
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardDetails:
+                  type: object
+                  properties:
+                    cardNumber:
+                      type: string
+                    expiryDate:
+                      type: string
+                      format: date
+                    cvv:
+                      type: string
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionStatus:
+                    type: string
+                    description: מצב העסקה
+      description: |
+        מאמת שהעסקאות ופרטי הכרטיס מוצפנים ומוגנים מפני פריצות במהלך תהליך איסוף התשלום.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
