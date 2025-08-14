@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: Credit Card API
+  description: API למערכת כרטיסי אשראי
+  version: 1.0.0
+servers:
+  - url: ${API_BASE_URL}
+    description: כתובת הבסיס של ה-API
+
+paths:
+  /credit-card/balance:
+    get:
+      summary: בדיקת תאריך פירעון ויתרה של כרטיס אשראי
+      description: שליפת תאריך הפירעון והיתרה עבור כרטיס אשראי
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: cardNumber
+          in: query
+          required: true
+          schema:
+            type: string
+            example: '1234-5678-9012-3456'
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expirationDate:
+                    type: string
+                    format: date
+                    example: '2024-12-31'
+                  balance:
+                    type: number
+                    example: 1500.00
+
+  /credit-card/reminder-call:
+    post:
+      summary: סידור שיחה למשתמש אם היתרה לא שולמה ועבר המועד
+      description: שליחת בקשה לסידור שיחה למשתמש כאשר יתרה לא שולמה
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardNumber:
+                  type: string
+                  example: '1234-5678-9012-3456'
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'שיחה למשתמש מסודרת בהצלחה'
+
+  /credit-card/payment:
+    post:
+      summary: עדכון יתרת כרטיס אשראי לאחר תשלום
+      description: עדכון יתרה לאחר ביצוע תשלום
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 100.00
+                currency:
+                  type: string
+                  example: 'USD'
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'היתרה מתעדכנת בהצלחה'
+        '503':
+          description: כשלון
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'הודעת שגיאה מתאימה, אנא נסה שוב מאוחר יותר'
+
+  /credit-card/multiple-payments:
+    post:
+      summary: בדיקת יציבות המערכת תחת עומס בעת עיבוד תשלומים מרובים
+      description: עיבוד תשלומים מרובים עבור כרטיסי אשראי
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  cardNumber:
+                    type: string
+                    example: '1234-5678-9012-3456'
+                  amount:
+                    type: number
+                    example: 100.00
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'כל התשלומים מעובדים והיתרות מתעדכנות בהצלחה'
